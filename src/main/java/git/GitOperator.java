@@ -8,9 +8,11 @@ import org.eclipse.jgit.api.ListTagCommand;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.errors.CheckoutConflictException;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.TreeWalk;
 
@@ -95,6 +97,47 @@ public class GitOperator {
             e.printStackTrace();
         }
         return;
+    }
+
+    public List<FileObject> getCommitFiles(Ref tag){
+        try{
+            RevWalk revWalk = new RevWalk(repository);
+            RevCommit commit = revWalk.parseCommit(tag.getPeeledObjectId());
+            treeWalk = new TreeWalk(repository );
+            treeWalk.addTree(commit.getTree());
+            treeWalk.setRecursive(true);
+            ArrayList<FileObject> result = new ArrayList<FileObject>();
+            ArrayList<String> introduce = new ArrayList<String>();
+            ArrayList<String> remove = new ArrayList<String>();
+            introduce.add("api/current.txt");
+            remove.add("api/removed.txt");
+            introduce.add("api/system-current.txt");
+            remove.add("api/system-removed.txt");
+            // TODO: old tag such as refs/tags/android-2.2.3_r2 contain current.xml instead of current.txt
+            while(treeWalk.next()) {
+                try {
+                    String filename = treeWalk.getNameString();
+                    String path = treeWalk.getPathString();
+                    if (!remove.contains(path) && !introduce.contains(path)) {
+                        continue;
+                    }
+                    ObjectId objectid = treeWalk.getObjectId(0);
+                    FileObject fileObject = new FileObject(path, filename, objectid);
+                    if (typeFilter.isFilter(fileObject.getType()))
+                        continue;
+
+                    ObjectLoader loader = repository.open(objectid);
+                    fileObject.setFiledata(new String(loader.getBytes(), "UTF-8"));
+                    result.add(fileObject);
+                }catch (MissingObjectException e){
+                    System.out.println(e);
+                }
+            }
+            return result;
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public List<FileObject> getCommitFiles(RevCommit commit){

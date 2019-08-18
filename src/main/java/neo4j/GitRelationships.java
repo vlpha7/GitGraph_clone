@@ -3,5 +3,5 @@ package neo4j;
 import org.neo4j.graphdb.RelationshipType;
 
 public enum GitRelationships implements RelationshipType {
-    BranchtoCommit, CommittoCommit, CommittoFile, FiletoClass, ClasstoMethod, MethodtoAPI
+    BranchtoCommit, CommittoCommit, CommittoFile, FiletoClass, ClasstoMethod, MethodtoAPI, Introduce, Remove, TagToTag
 }

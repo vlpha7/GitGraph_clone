@@ -23,4 +23,9 @@ public class ApiObject {
     public String getSign(){
         return package_name + "." + name;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.getSign().equals(((ApiObject) obj).getSign());
+    }
 }

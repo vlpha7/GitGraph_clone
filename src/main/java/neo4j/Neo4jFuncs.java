@@ -53,6 +53,17 @@ public class Neo4jFuncs {
         return node;
     }
 
+    public Node createTagNode(String tag_name) {
+        Node node;
+        try (Transaction tx = db.beginTx()) {
+            node = db.createNode(GitLables.Tag);
+            node.setProperty("name", tag_name);
+
+            tx.success();
+        }
+        return node;
+    }
+
     public Node createCommitNode(String commit_name, String developer,
                                  int time, String commit_message) {
         Node node;
@@ -212,6 +223,24 @@ public class Neo4jFuncs {
         Node result;
         try (Transaction tx = db.beginTx()) {
             result = db.findNode(GitLables.API, "name", ao.getSign());
+            tx.success();
+        }
+        return result;
+    }
+
+    public Node matchTag(String tag_name){
+        Node result;
+        try (Transaction tx = db.beginTx()) {
+            result = db.findNode(GitLables.Tag, "name", tag_name);
+            tx.success();
+        }
+        return result;
+    }
+
+    public Node getTagById(Long idx){
+        Node result;
+        try (Transaction tx = db.beginTx()) {
+            result = db.getNodeById(idx);
             tx.success();
         }
         return result;

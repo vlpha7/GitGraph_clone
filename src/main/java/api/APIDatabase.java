@@ -93,7 +93,7 @@ public class APIDatabase {
             //System.out.println();
         }
         //System.out.println(apiClass.methods.size());
-        neo4j.db.shutdown();
+        //neo4j.db.shutdown();
     }
 
     public ApiObject checkApi(String package_name, String function) {

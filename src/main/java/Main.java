@@ -4,12 +4,14 @@ import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
 
+import java.io.FileNotFoundException;
+
 /**
  * Created by Carol on 2018/11/27.
  */
 
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) throws FileNotFoundException {
         ArgumentParser parser = ArgumentParsers.newFor("Main").build()
                 .defaultHelp(true)
                 .description("Analyse a git project and build visible graph");
@@ -43,7 +45,7 @@ public class Main {
         if (database != null){
             Configuration.database = database;
         }
-        Configuration.database = "/Users/locpv/Library/Application Support/Neo4j Desktop/Application/neo4jDatabases/database-d8ffc705-22f2-47af-bb95-adf5565ad470/installation-3.5.6/data/databases/graph.db";
+        Configuration.database = "/Users/vlpha7/Library/Application Support/Neo4j Desktop/Application/neo4jDatabases/database-8c567e3a-0127-46e5-ab39-86011226e206/installation-3.5.6/data/databases/graph.db";
         System.out.println("Starting...");
         new Analyser(project, filter).run();
         System.out.println("Done.");
